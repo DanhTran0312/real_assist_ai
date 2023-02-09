@@ -1,0 +1,28 @@
+name: real_assist_ai
+description: A chat box demonstration for realassist.ai
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: '>=2.18.0 <3.0.0'
+  flutter: 3.3.10
+
+dependencies:
+  bloc: ^8.1.0
+  equatable: ^2.0.5
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.1.1
+  flutter_localizations:
+    sdk: flutter
+  json_annotation: ^4.8.0
+  json_serializable: ^6.6.1
+
+dev_dependencies:
+  build_runner: ^2.3.3
+  mocktail: ^0.3.0
+  very_good_analysis: ^4.0.0+1
+
+flutter:
+  uses-material-design: true
+  generate: true
