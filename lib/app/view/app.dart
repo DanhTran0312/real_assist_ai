@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:real_assist_ai/chat/chat.dart';
+import 'package:real_assist_ai/conversation/view/conversation_page.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -13,6 +14,7 @@ class App extends StatelessWidget {
           accentColor: const Color(0xFF13B9FF),
         ),
       ),
+      debugShowCheckedModeBanner: false,
       home: const _ResponsiveWidget(),
     );
   }
@@ -25,99 +27,55 @@ class _ResponsiveWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth > 800) {
-          return Scaffold(
-            body: Row(
-              children: [
-                const Expanded(
-                  flex: 3,
-                  child: ChatPage(),
-                ),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border(
-                        left: BorderSide(
-                          color: Colors.grey.shade300,
-                          width: 2,
-                        ),
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Recent Chats',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium!
-                              .copyWith(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w500,
-                              ),
-                        ),
-                        const SizedBox(height: 20),
-                        Expanded(
-                          child: ListView.separated(
-                            separatorBuilder: (context, index) {
-                              return Divider(
-                                color: Colors.grey.shade100,
-                                height: 0,
-                              );
-                            },
-                            itemCount: 10,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 15,
-                                ),
-                                title: const Text(
-                                  'Clause for renters best interest for a rental property',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 17,
-                                  ),
-                                ),
-                                trailing: PopupMenuButton(
-                                  icon: const Icon(
-                                    Icons.arrow_drop_down_sharp,
-                                    color: Colors.grey,
-                                  ),
-                                  itemBuilder: (context) {
-                                    return [
-                                      const PopupMenuItem(
-                                        child: ListTile(
-                                          leading: Icon(Icons.archive),
-                                          title: Text('Archive Chat'),
-                                        ),
-                                      ),
-                                      const PopupMenuItem(
-                                        child: ListTile(
-                                          leading: Icon(Icons.delete),
-                                          title: Text('Delete Chat'),
-                                        ),
-                                      ),
-                                    ];
-                                  },
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+        if (constraints.maxWidth > 1400) {
+          return const _ChatPageLarge(
+            chatPageFlex: 4,
+            conversationPageFlex: 1,
+          );
+        } else if (constraints.maxWidth > 1000 && constraints.maxWidth < 1400) {
+          return const _ChatPageLarge(
+            chatPageFlex: 3,
+            conversationPageFlex: 1,
+          );
+        } else if (constraints.maxWidth > 720 && constraints.maxWidth < 1000) {
+          return const _ChatPageLarge(
+            chatPageFlex: 3,
+            conversationPageFlex: 2,
           );
         } else {
           return const ChatPage();
         }
       },
+    );
+  }
+}
+
+class _ChatPageLarge extends StatelessWidget {
+  const _ChatPageLarge({
+    required this.chatPageFlex,
+    required this.conversationPageFlex,
+  });
+
+  final int chatPageFlex;
+  final int conversationPageFlex;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Row(
+        children: [
+          Expanded(
+            flex: chatPageFlex,
+            child: const ChatPage(
+              hideActions: true,
+            ),
+          ),
+          Expanded(
+            flex: conversationPageFlex,
+            child: const ConversationPage(),
+          ),
+        ],
+      ),
     );
   }
 }

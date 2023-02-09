@@ -8,63 +8,69 @@ import 'package:real_assist_ai/theme/theme.dart';
 /// {@endtemplate}
 class ChatPage extends StatelessWidget {
   /// {@macro chat_page}
-  const ChatPage({super.key});
+  const ChatPage({super.key, this.hideActions = false});
 
   /// The static route for ChatPage
   static Route<dynamic> route() {
     return MaterialPageRoute<dynamic>(builder: (_) => const ChatPage());
   }
 
+  final bool hideActions;
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ChatCubit(),
-      child: const Scaffold(
+      child: Scaffold(
         backgroundColor: lightScaffoldBackgroundColor,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(80),
-          child: _AppBar(),
+          preferredSize: const Size.fromHeight(100),
+          child: _CustomAppBar(
+            hideActions: hideActions,
+          ),
         ),
-        body: ChatView(),
+        body: const ChatView(),
       ),
     );
   }
 }
 
-class _AppBar extends StatelessWidget {
-  const _AppBar();
+class _CustomAppBar extends StatelessWidget {
+  const _CustomAppBar({
+    this.hideActions = false,
+  });
+
+  final bool hideActions;
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      shadowColor: const Color(0xffefeef3).withOpacity(0.5),
-      centerTitle: false,
-      backgroundColor: Colors.white,
-      leading: const _MenuButton(),
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text(
-            'Real Assist AI',
-            style: TextStyle(
-              color: Colors.black87,
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
+    return Card(
+      margin: EdgeInsets.zero,
+      shape: const RoundedRectangleBorder(),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 15,
+        ),
+        child: SafeArea(
+          child: ListTile(
+            leading: const _MenuButton(),
+            title: Text(
+              'Real Assist AI',
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
             ),
-          ),
-          SizedBox(height: 5),
-          Text(
-            'This is a private message, between you and Assistant',
-            style: TextStyle(
-              color: Colors.black45,
-              fontSize: 11,
+            subtitle: Text(
+              'This is a private message, between you and Assistant',
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: Colors.black45,
+                  ),
             ),
+            trailing: hideActions ? null : const _MessagesButton(),
           ),
-        ],
+        ),
       ),
-      actions: const [
-        _MessagesButton(),
-      ],
     );
   }
 }
