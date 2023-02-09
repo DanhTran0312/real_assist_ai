@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:real_assist_ai/chat/cubit/cubit.dart';
 import 'package:real_assist_ai/chat/widgets/chat_body.dart';
-import 'package:real_assist_ai/theme/theme.dart';
 
 /// {@template chat_page}
 /// A description for ChatPage
@@ -19,18 +17,15 @@ class ChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ChatCubit(),
-      child: Scaffold(
-        backgroundColor: lightScaffoldBackgroundColor,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(100),
-          child: _CustomAppBar(
-            hideActions: hideActions,
-          ),
+    return Scaffold(
+      backgroundColor: const Color(0xfff5f4f9),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(100),
+        child: _CustomAppBar(
+          hideActions: hideActions,
         ),
-        body: const ChatView(),
       ),
+      body: const ChatView(),
     );
   }
 }
