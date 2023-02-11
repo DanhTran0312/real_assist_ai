@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_assist_ai/chat/chat.dart';
+import 'package:real_assist_ai/chat/cubit/chat_cubit.dart';
+import 'package:real_assist_ai/chat/cubit/chat_list_cubit.dart';
 import 'package:real_assist_ai/conversation/view/conversation_page.dart';
 
 class App extends StatelessWidget {
-  const App({super.key});
+  const App({
+    required ChatCubit chatCubit,
+    required ChatListCubit chatListCubit,
+  })  : _chatCubit = chatCubit,
+        _chatListCubit = chatListCubit,
+        super(key: const Key('App'));
+
+  final ChatCubit _chatCubit;
+  final ChatListCubit _chatListCubit;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +26,17 @@ class App extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: const _ResponsiveWidget(),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => _chatCubit,
+          ),
+          BlocProvider(
+            create: (context) => _chatListCubit,
+          ),
+        ],
+        child: const _ResponsiveWidget(),
+      ),
     );
   }
 }

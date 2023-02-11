@@ -21,6 +21,7 @@ class ChatMessage extends StatelessWidget {
         child: Row(
           mainAxisAlignment:
               isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Column(
               crossAxisAlignment:
@@ -43,32 +44,34 @@ class ChatMessage extends StatelessWidget {
                       bottomLeft: const Radius.circular(15),
                     ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          message.message,
-                          style: TextStyle(
-                            color: isMe ? Colors.white : Colors.black,
+                  child: IntrinsicWidth(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            message.message,
+                            style: TextStyle(
+                              color: isMe ? Colors.white : Colors.black,
+                            ),
                           ),
                         ),
-                      ),
-                      if (isMe)
-                        const SizedBox()
-                      else
-                        IconButton(
-                          alignment: Alignment.bottomRight,
-                          padding: EdgeInsets.zero,
-                          splashRadius: 10,
-                          onPressed: () {
-                            // TODO: Copy message to clipboard
-                          },
-                          icon: const Icon(Icons.copy_outlined),
-                          iconSize: 14,
-                          color: Colors.black54,
-                        ),
-                    ],
+                        if (isMe)
+                          const SizedBox()
+                        else
+                          IconButton(
+                            alignment: Alignment.bottomRight,
+                            padding: EdgeInsets.zero,
+                            splashRadius: 10,
+                            onPressed: () {
+                              // TODO: Copy message to clipboard
+                            },
+                            icon: const Icon(Icons.copy_outlined),
+                            iconSize: 14,
+                            color: Colors.black54,
+                          ),
+                      ],
+                    ),
                   ),
                 ),
                 Padding(

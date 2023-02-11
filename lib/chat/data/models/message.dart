@@ -47,6 +47,16 @@ class Message extends Equatable {
     );
   }
 
+  // ignore: prefer_constructors_over_static_methods
+  static Message defaultResponse() {
+    return Message(
+      message: 'Hi, I am Real Assist AI. How can I help you?',
+      timeSent: DateTime.now().millisecondsSinceEpoch,
+      senderId: 'bot',
+      receiverId: 'user',
+    );
+  }
+
   @override
   List<Object?> get props => [
         message,

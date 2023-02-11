@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_assist_ai/chat/chat.dart';
+import 'package:real_assist_ai/chat/cubit/chat_cubit.dart';
+import 'package:real_assist_ai/chat/cubit/chat_list_cubit.dart';
 import 'package:real_assist_ai/chat/data/models/message.dart';
 import 'package:real_assist_ai/chat/widgets/privacy_chip.dart';
 
@@ -14,29 +17,30 @@ class ChatBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final message = Message(
-      message:
-          'Lorem ipsum dolor sit amet, sit adipiscing elit. Lorem ipsum dolor sit amet, sit adipiscing elit',
-      timeSent: DateTime.now().millisecondsSinceEpoch,
-      senderId: 'Danh',
-      receiverId: 'AI',
-    );
     return SafeArea(
       child: ConstrainedBox(
         constraints: const BoxConstraints.expand(),
         child: Stack(
           children: [
-            CustomScrollView(
-              reverse: true,
-              slivers: [
-                const SliverPadding(
-                  padding: EdgeInsets.only(top: 25, bottom: 25),
-                ),
-                _ChatList(message: message),
-                const SliverToBoxAdapter(
-                  child: PrivacyChip(),
-                ),
-              ],
+            BlocBuilder<ChatListCubit, ChatListState>(
+              builder: (context, state) {
+                if (state is ChatListLoaded) {
+                  return CustomScrollView(
+                    reverse: true,
+                    slivers: [
+                      const SliverPadding(
+                        padding: EdgeInsets.only(top: 25, bottom: 25),
+                      ),
+                      _ChatList(messages: state.messages.reversed.toList()),
+                      const SliverToBoxAdapter(
+                        child: PrivacyChip(),
+                      ),
+                    ],
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
             ),
             const _CustomTextField(),
           ],
@@ -48,11 +52,10 @@ class ChatBody extends StatelessWidget {
 
 class _ChatList extends StatelessWidget {
   const _ChatList({
-    required this.message,
+    required this.messages,
   });
 
-  final Message message;
-
+  final List<Message> messages;
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
@@ -64,11 +67,11 @@ class _ChatList extends StatelessWidget {
         delegate: SliverChildBuilderDelegate(
           (context, index) {
             return ChatMessage(
-              message: message,
-              isMe: index.isEven,
+              message: messages[index],
+              isMe: messages[index].senderId == 'user',
             );
           },
-          childCount: 10,
+          childCount: messages.length,
         ),
       ),
     );
@@ -103,9 +106,11 @@ class _CustomTextField extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    const Expanded(
+                    Expanded(
                       child: TextField(
-                        decoration: InputDecoration(
+                        controller:
+                            context.read<ChatCubit>().textEditingController,
+                        decoration: const InputDecoration(
                           hintText: 'Message',
                           border: InputBorder.none,
                         ),
@@ -121,7 +126,9 @@ class _CustomTextField extends StatelessWidget {
             ),
             const SizedBox(width: 20),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                context.read<ChatCubit>().getResponse();
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xff304cef),
                 shape: const CircleBorder(),
